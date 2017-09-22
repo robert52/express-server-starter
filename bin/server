@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+const main = require('../lib/app');
+const run = async () => {
+  try {
+    const container = await main();
+    const http = container.http;
+    const server = http.createServer(container.app);
+    server.listen(container.port, container.hostname, () => {
+      const addr = server.address();
+      container.logger.info('Server is running', {
+        app: container.name,
+        hostname: addr.address,
+        port: addr.port,
+        environment: container.env,
+        url: container.url
+      });
+    });
+  } catch(err) {
+    throw err;
+  }
+};
+
+run();
